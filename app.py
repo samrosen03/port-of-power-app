@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from flask import Flask, render_template, request, redirect, url_for
 import csv
 
@@ -38,15 +38,6 @@ def progress():
 @app.route('/')
 def home():
     return render_template('index.html')
-=======
-from flask import Flask
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Welcome to Port of Power!"
->>>>>>> a798d5ced0d83db29b6b49edd5c9375ae9e7d43a
 
 if __name__ == '__main__':
     app.run(debug=True)
