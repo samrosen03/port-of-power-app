@@ -1,39 +1,48 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Progress Tracker</title>
+  <title>Client Progress</title>
+  <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 </head>
-<body>
-  <h1>Log Your Progress</h1>
-  <form method="POST">
-    <label for="exercise">Exercise:</label>
-    <input type="text" name="exercise" required><br><br>
+<body class="bg-gray-100 text-gray-900 p-8">
 
-    <label for="weight">Weight (lbs):</label>
-    <input type="number" name="weight" required><br><br>
-
-    <label for="reps">Reps:</label>
-    <input type="number" name="reps" required><br><br>
-
-    <button type="submit">Submit</button>
+  <!-- Form to log new progress -->
+  <form method="POST" action="/progress" class="mb-6 px-4">
+    <input type="text" name="exercise" placeholder="Exercise" class="border rounded px-2 py-1 mr-2" required>
+    <input type="text" name="weight" placeholder="Weight" class="border rounded px-2 py-1 mr-2" required>
+    <input type="text" name="reps" placeholder="Reps" class="border rounded px-2 py-1 mr-2" required>
+    <button type="submit" class="bg-green-500 text-white px-4 py-1 rounded">Submit</button>
   </form>
 
-  <h2>Past Progress</h2>
-  <table border="1">
-    <tr>
-      <th>Exercise</th>
-      <th>Weight (lbs)</th>
-      <th>Reps</th>
-    </tr>
-    {% for entry in entries %}
-    <tr>
-      <td>{{ entry[0] }}</td>
-      <td>{{ entry[1] }}</td>
-      <td>{{ entry[2] }}</td>
-    </tr>
-    {% endfor %}
+  <!-- Progress table -->
+  <h1 class="text-3xl font-bold text-green-600 mb-6 text-center">Client Progress</h1>
+  <table class="table-auto w-full border border-collapse">
+    <thead>
+      <tr class="bg-green-200">
+        <th class="border px-4 py-2">#</th>
+        <th class="border px-4 py-2">Workout</th>
+        <th class="border px-4 py-2">Weight</th>
+        <th class="border px-4 py-2">Reps</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr class="bg-white border-b">
+        <td class="border px-4 py-2">{{ loop.index }}</td>
+        <td class="border px-4 py-2">{{ entry[0] }}</td>
+        <td class="border px-4 py-2">{{ entry[1] }}</td>
+        <td class="border px-4 py-2">{{ entry[2] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
+
+  <!-- Back home link -->
+  <div class="mt-6 text-center">
+    <a href="/" class="text-blue-500 hover:underline">← Back to Home</a>
+  </div>
+
 </body>
 </html>
+
+

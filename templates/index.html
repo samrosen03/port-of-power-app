@@ -2,10 +2,20 @@
 <html>
 <head>
     <title>Port of Power</title>
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Welcome to Port of Power!</h1>
-    <p><a href="/progress">Go to Client Dashboard</a></p>
+<body class="bg-white text-center p-10">
+<img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" alt="Port of Power Logo" class="h-32 mx-auto mb-6">
+
+    <h1 class="text-4xl text-blue-600 font-bold mb-4">Welcome to Port of Power!</h1>
+    
+    <p>
+        <a href="/progress" class="text-lg text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">
+            Go to Client Dashboard
+        </a>
+    </p>
+
 </body>
 </html>
+
 
