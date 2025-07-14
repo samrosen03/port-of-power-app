@@ -2,47 +2,73 @@
 <html>
 <head>
   <title>Client Progress</title>
-  <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+  <link href="/static/css/output.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 text-gray-900 p-8">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
-  <!-- Form to log new progress -->
-  <form method="POST" action="/progress" class="mb-6 px-4">
-    <input type="text" name="exercise" placeholder="Exercise" class="border rounded px-2 py-1 mr-2" required>
-    <input type="text" name="weight" placeholder="Weight" class="border rounded px-2 py-1 mr-2" required>
-    <input type="text" name="reps" placeholder="Reps" class="border rounded px-2 py-1 mr-2" required>
-    <button type="submit" class="bg-green-500 text-white px-4 py-1 rounded">Submit</button>
-  </form>
+  <h1 class="text-red-600 text-3xl text-center mb-4">🚨 IF YOU SEE THIS — IT'S WORKING</h1>
 
-  <!-- Progress table -->
-  <h1 class="text-3xl font-bold text-green-600 mb-6 text-center">Client Progress</h1>
-  <table class="table-auto w-full border border-collapse">
-    <thead>
-      <tr class="bg-green-200">
-        <th class="border px-4 py-2">#</th>
-        <th class="border px-4 py-2">Workout</th>
-        <th class="border px-4 py-2">Weight</th>
-        <th class="border px-4 py-2">Reps</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for entry in entries %}
-      <tr class="bg-white border-b">
-        <td class="border px-4 py-2">{{ loop.index }}</td>
-        <td class="border px-4 py-2">{{ entry[0] }}</td>
-        <td class="border px-4 py-2">{{ entry[1] }}</td>
-        <td class="border px-4 py-2">{{ entry[2] }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-3xl">
 
-  <!-- Back home link -->
-  <div class="mt-6 text-center">
-    <a href="/" class="text-blue-500 hover:underline">← Back to Home</a>
+
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Client Progress Dashboard</h1>
+    <a href="{{ url_for('home') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
+
+    <!-- ✅ Form -->
+    <form method="POST" action="/progress" class="mb-8">
+      <div class="mb-4">
+        <input type="text" name="exercise" placeholder="Workout"
+               class="w-full border border-gray-300 rounded px-4 py-2" required>
+      </div>
+      <div class="mb-4">
+        <input type="text" name="weight" placeholder="Weight"
+               class="w-full border border-gray-300 rounded px-4 py-2" required>
+      </div>
+      <div class="mb-6">
+        <input type="text" name="reps" placeholder="Reps"
+               class="w-full border border-gray-300 rounded px-4 py-2" required>
+      </div>
+<button type="submit"
+  class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition duration-200">
+  Submit Progress
+</button>
+
+
+
+
+    </form>
+
+    <!-- ✅ Table -->
+    <div class="overflow-x-auto">
+      <table class="table-auto w-full text-left border-collapse border border-gray-300">
+        <thead class="bg-blue-100 text-blue-700">
+          <tr>
+            <th class="px-4 py-2 border border-gray-300">Date</th>
+            <th class="px-4 py-2 border border-gray-300">Workout</th>
+            <th class="px-4 py-2 border border-gray-300">Weight</th>
+            <th class="px-4 py-2 border border-gray-300">Reps</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in progress_data %}
+          <tr class="border-t">
+            <td class="px-4 py-2 border border-gray-300">{{ row[0] }}</td>
+            <td class="px-4 py-2 border border-gray-300">{{ row[1] }}</td>
+            <td class="px-4 py-2 border border-gray-300">{{ row[2] }}</td>
+            <td class="px-4 py-2 border border-gray-300">{{ row[3] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
-
 </body>
 </html>
+
+
+
+
+
 
 

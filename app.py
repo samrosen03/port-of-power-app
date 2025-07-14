@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import csv
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -13,26 +14,30 @@ def progress():
         exercise = request.form['exercise']
         weight = request.form['weight']
         reps = request.form['reps']
+        date = datetime.now().strftime("%Y-%m-%d")
 
         with open('progress_log.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([exercise, weight, reps])
+            writer.writerow([date, exercise, weight, reps])
 
-        return redirect(url_for('progress'))  # Redirect after saving
+        return redirect(url_for('progress'))
 
-    # Show saved entries
+    # Read CSV and show entries
     entries = []
     try:
         with open('progress_log.csv', 'r') as file:
             reader = csv.reader(file)
-            entries = list(reader)
+            entries = list(reader)[1:]  # Skip header
+            print("ENTRIES FROM CSV:", entries)
     except FileNotFoundError:
-        pass
+        entries = []
 
-    return render_template('progress.html', entries=entries)
+    return render_template('progress.html', progress_data=entries)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
 
 
