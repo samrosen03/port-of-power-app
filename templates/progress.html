@@ -6,12 +6,10 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
-
   <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-3xl">
 
-
     <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Client Progress Dashboard</h1>
-    <a href="{{ url_for('home') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
+    <a href="{{ url_for('index') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
 
     <!-- ✅ Form -->
     <form method="POST" action="/progress" class="mb-8">
@@ -27,14 +25,9 @@
         <input type="text" name="reps" placeholder="Reps"
                class="w-full border border-gray-300 rounded px-4 py-2" required>
       </div>
-<button type="submit"
-  class="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition duration-200">
-  Submit Progress
-</button>
-
-
-
-
+      <button type="submit" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+        Submit Progress
+      </button>
     </form>
 
     <!-- ✅ Table -->
@@ -64,6 +57,7 @@
   </div>
 </body>
 </html>
+
 
 
 
