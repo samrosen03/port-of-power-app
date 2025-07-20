@@ -11,27 +11,36 @@
     <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Client Progress Dashboard</h1>
     <a href="{{ url_for('index') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
 
-    <!-- ✅ Form -->
-    <form method="POST" action="/progress" class="mb-8">
-      <div class="mb-4">
-        <input type="text" name="exercise" placeholder="Workout"
-               class="w-full border border-gray-300 rounded px-4 py-2" required>
-      </div>
-      <div class="mb-4">
-        <input type="text" name="weight" placeholder="Weight"
-               class="w-full border border-gray-300 rounded px-4 py-2" required>
-      </div>
-      <div class="mb-6">
-        <input type="text" name="reps" placeholder="Reps"
-               class="w-full border border-gray-300 rounded px-4 py-2" required>
-      </div>
-      <button type="submit" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+    <!-- ✅ Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mb-4 text-center text-sm text-{{ 'green-600' if category == 'success' else 'red-600' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- ✅ Progress Form -->
+    <form method="POST" action="/progress" class="mb-8 max-w-md mx-auto space-y-4">
+      <input type="text" name="exercise" placeholder="Workout"
+             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+
+      <input type="number" name="weight" placeholder="Weight"
+             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+
+      <input type="number" name="reps" placeholder="Reps"
+             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+
+      <button type="submit"
+              class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-200 w-full">
         Submit Progress
       </button>
     </form>
 
-    <!-- ✅ Table -->
-    <div class="overflow-x-auto">
+    <!-- ✅ Progress Table -->
+    <div class="overflow-x-auto mt-10">
       <table class="table-auto w-full text-left border-collapse border border-gray-300">
         <thead class="bg-blue-100 text-blue-700">
           <tr>
@@ -57,6 +66,7 @@
   </div>
 </body>
 </html>
+
 
 
 
