@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome, {{ current_user.username }}! 💪</h1>
+    <p>This is your dashboard.</p>
+
+    <h2>Your Options:</h2>
+    <ul>
+        <li><a href="/progress">View Progress</a></li>
+        <li><a href="/log">Log Workout</a></li>
+        <!-- Add more links here as you build more features -->
+    </ul>
+
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
