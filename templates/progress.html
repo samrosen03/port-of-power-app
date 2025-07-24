@@ -63,6 +63,15 @@
     </a>
   {% endif %}
 </form>
+<!-- 💪 Personal Records Section -->
+<h2 class="text-xl font-semibold mb-2 text-center">💪 Personal Records</h2>
+<ul class="text-center mb-10">
+  {% for exercise, weight in pr_data %}
+    <li class="text-gray-700">
+      <strong>{{ exercise }}:</strong> {{ weight }} lbs
+    </li>
+  {% endfor %}
+</ul>
 
     <!-- ✅ Progress Table -->
     <div class="overflow-x-auto mt-10">

@@ -8,6 +8,7 @@ from wtforms.validators import InputRequired, Email, Length
 from datetime import datetime
 import smtplib
 from email.message import EmailMessage
+from sqlalchemy import func  # ✅ Needed for PR query
 
 # ---------------- FLASK CONFIG ----------------
 app = Flask(__name__)
@@ -87,7 +88,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('progress'))  # ✅ FIXED INDENTATION
+            return redirect(url_for('progress'))
 
         flash('Login failed. Check username/password.', 'danger')
 
@@ -129,6 +130,7 @@ def progress():
         flash("Progress submitted!", "success")
         return redirect(url_for('progress'))
 
+    # GET — fetch data
     selected_exercise = request.args.get('exercise')
 
     if selected_exercise:
@@ -145,10 +147,17 @@ def progress():
     ).distinct().all()
     all_exercises = [e[0] for e in all_exercises]
 
+    # ✅ PR Query — max weight per exercise
+    pr_data = db.session.query(
+        Progress.exercise,
+        func.max(Progress.weight)
+    ).filter_by(user_id=current_user.id).group_by(Progress.exercise).all()
+
     return render_template('progress.html',
                            progress_data=progress_data,
                            all_exercises=all_exercises,
-                           selected_exercise=selected_exercise)
+                           selected_exercise=selected_exercise,
+                           pr_data=pr_data)
 
 @app.route('/contact', methods=['POST'])
 def contact():
