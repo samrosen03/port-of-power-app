@@ -8,7 +8,7 @@ from wtforms.validators import InputRequired, Email, Length
 from datetime import datetime
 import smtplib
 from email.message import EmailMessage
-from sqlalchemy import func  # ✅ Needed for PR query
+from sqlalchemy import func  # ✅ for PR query
 
 # ---------------- FLASK CONFIG ----------------
 app = Flask(__name__)
@@ -64,9 +64,10 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-
     if form.validate_on_submit():
-        existing_user = User.query.filter((User.username == form.username.data) | (User.email == form.email.data)).first()
+        existing_user = User.query.filter(
+            (User.username == form.username.data) | (User.email == form.email.data)
+        ).first()
         if existing_user:
             flash("Username or email already exists.", "error")
             return redirect(url_for('register'))
@@ -83,15 +84,12 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('progress'))
-
         flash('Login failed. Check username/password.', 'danger')
-
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -108,6 +106,7 @@ def dashboard():
 @app.route('/progress', methods=['GET', 'POST'])
 @login_required
 def progress():
+    # ---------------- POST: Add New Entry ----------------
     if request.method == 'POST':
         exercise = request.form['exercise']
         weight = request.form['weight']
@@ -130,7 +129,7 @@ def progress():
         flash("Progress submitted!", "success")
         return redirect(url_for('progress'))
 
-    # GET — fetch data
+    # ---------------- GET: Fetch Data ----------------
     selected_exercise = request.args.get('exercise')
 
     if selected_exercise:
@@ -142,22 +141,28 @@ def progress():
             user_id=current_user.id
         ).order_by(Progress.date.desc()).all()
 
+    # All exercise names for filter dropdown
     all_exercises = db.session.query(Progress.exercise).filter_by(
         user_id=current_user.id
     ).distinct().all()
     all_exercises = [e[0] for e in all_exercises]
 
-    # ✅ PR Query — max weight per exercise
+    # ✅ PR Query — Max weight per exercise
     pr_data = db.session.query(
         Progress.exercise,
         func.max(Progress.weight)
     ).filter_by(user_id=current_user.id).group_by(Progress.exercise).all()
 
+    # ✅ Convert PR results into dictionary for easy lookup
+    pr_dict = {exercise: max_weight for exercise, max_weight in pr_data}
+
+    # Render template with all required variables
     return render_template('progress.html',
                            progress_data=progress_data,
                            all_exercises=all_exercises,
                            selected_exercise=selected_exercise,
-                           pr_data=pr_data)
+                           pr_data=pr_data,
+                           pr_dict=pr_dict)
 
 @app.route('/contact', methods=['POST'])
 def contact():
@@ -189,6 +194,8 @@ def send_email(name, sender_email, message_body):
 # ---------------- RUN APP ----------------
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
 
 

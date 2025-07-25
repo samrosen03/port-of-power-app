@@ -38,40 +38,42 @@
         Submit Progress
       </button>
     </form>
-<!-- ✅ Exercise Filter Dropdown -->
-<form method="GET" action="/progress" class="mb-8 text-center">
-  <label for="exercise" class="mr-2 text-sm font-medium">Filter by exercise:</label>
-  <select name="exercise" id="exercise"
-          class="px-3 py-2 border border-gray-300 rounded text-sm">
-    <option value="">-- Show All --</option>
-    {% for exercise in all_exercises %}
-      <option value="{{ exercise }}"
-              {% if exercise == selected_exercise %}selected{% endif %}>
-        {{ exercise }}
-      </option>
-    {% endfor %}
-  </select>
-  <button type="submit"
-          class="ml-2 px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-    Filter
-  </button>
 
-  {% if selected_exercise %}
-    <a href="/progress"
-       class="text-blue-500 text-sm underline ml-4">
-       Clear Filter
-    </a>
-  {% endif %}
-</form>
-<!-- 💪 Personal Records Section -->
-<h2 class="text-xl font-semibold mb-2 text-center">💪 Personal Records</h2>
-<ul class="text-center mb-10">
-  {% for exercise, weight in pr_data %}
-    <li class="text-gray-700">
-      <strong>{{ exercise }}:</strong> {{ weight }} lbs
-    </li>
-  {% endfor %}
-</ul>
+    <!-- ✅ Exercise Filter Dropdown -->
+    <form method="GET" action="/progress" class="mb-8 text-center">
+      <label for="exercise" class="mr-2 text-sm font-medium">Filter by exercise:</label>
+      <select name="exercise" id="exercise"
+              class="px-3 py-2 border border-gray-300 rounded text-sm">
+        <option value="">-- Show All --</option>
+        {% for exercise in all_exercises %}
+          <option value="{{ exercise }}"
+                  {% if exercise == selected_exercise %}selected{% endif %}>
+            {{ exercise }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit"
+              class="ml-2 px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
+        Filter
+      </button>
+
+      {% if selected_exercise %}
+        <a href="/progress"
+           class="text-blue-500 text-sm underline ml-4">
+           Clear Filter
+        </a>
+      {% endif %}
+    </form>
+
+    <!-- 💪 Personal Records Section -->
+    <h2 class="text-xl font-semibold mb-2 text-center">💪 Personal Records</h2>
+    <ul class="text-center mb-10">
+      {% for exercise, weight in pr_data %}
+        <li class="text-gray-700">
+          <strong>{{ exercise }}:</strong> {{ weight }} lbs
+        </li>
+      {% endfor %}
+    </ul>
 
     <!-- ✅ Progress Table -->
     <div class="overflow-x-auto mt-10">
@@ -86,14 +88,13 @@
         </thead>
         <tbody>
           {% for entry in progress_data %}
-  <tr>
-    <td>{{ entry.date }}</td>
-    <td>{{ entry.exercise }}</td>
-    <td>{{ entry.weight }}</td>
-    <td>{{ entry.reps }}</td>
-  </tr>
-{% endfor %}
-
+            <tr class="{% if pr_dict.get(entry.exercise) == entry.weight %}bg-yellow-100 font-bold{% endif %}">
+              <td>{{ entry.date }}</td>
+              <td>{{ entry.exercise }}</td>
+              <td>{{ entry.weight }}</td>
+              <td>{{ entry.reps }}</td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -101,6 +102,7 @@
   </div>
 </body>
 </html>
+
 
 
 
