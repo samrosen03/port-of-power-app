@@ -8,11 +8,11 @@ from wtforms.validators import InputRequired, Email, Length
 from datetime import datetime
 import smtplib
 from email.message import EmailMessage
-from sqlalchemy import func  # ✅ for PR query
+from sqlalchemy import func
 
 # ---------------- FLASK CONFIG ----------------
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Replace with env var in production
+app.secret_key = 'supersecretkey'
 
 # ---------------- DATABASE CONFIG ----------------
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///progress.db'
@@ -78,7 +78,6 @@ def register():
         db.session.commit()
         flash("Account created! Please log in.", "success")
         return redirect(url_for('login'))
-
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -103,10 +102,10 @@ def logout():
 def dashboard():
     return render_template('dashboard.html', user=current_user)
 
+# ---------------- PROGRESS ROUTE ----------------
 @app.route('/progress', methods=['GET', 'POST'])
 @login_required
 def progress():
-    # ---------------- POST: Add New Entry ----------------
     if request.method == 'POST':
         exercise = request.form['exercise']
         weight = request.form['weight']
@@ -129,7 +128,6 @@ def progress():
         flash("Progress submitted!", "success")
         return redirect(url_for('progress'))
 
-    # ---------------- GET: Fetch Data ----------------
     selected_exercise = request.args.get('exercise')
 
     if selected_exercise:
@@ -141,19 +139,16 @@ def progress():
             user_id=current_user.id
         ).order_by(Progress.date.desc()).all()
 
-    # All exercises for dropdown
     all_exercises = db.session.query(Progress.exercise).filter_by(
         user_id=current_user.id
     ).distinct().all()
     all_exercises = [e[0] for e in all_exercises]
 
-    # ✅ PR Query
     pr_data = db.session.query(
         Progress.exercise,
         func.max(Progress.weight)
     ).filter_by(user_id=current_user.id).group_by(Progress.exercise).all()
 
-    # ✅ PR Dictionary
     pr_dict = {exercise: max_weight for exercise, max_weight in pr_data}
 
     return render_template('progress.html',
@@ -176,6 +171,26 @@ def delete_entry(entry_id):
         flash("Entry not found or unauthorized.", "error")
     return redirect(url_for('progress'))
 
+# ---------------- EDIT ENTRY ROUTE ----------------
+@app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
+@login_required
+def edit_entry(entry_id):
+    entry = Progress.query.filter_by(id=entry_id, user_id=current_user.id).first()
+    if not entry:
+        flash("Entry not found or unauthorized.", "error")
+        return redirect(url_for('progress'))
+
+    if request.method == 'POST':
+        entry.exercise = request.form['exercise']
+        entry.weight = int(request.form['weight'])
+        entry.reps = int(request.form['reps'])
+        db.session.commit()
+        flash("Entry updated successfully!", "success")
+        return redirect(url_for('progress'))
+
+    return render_template('edit.html', entry=entry)
+
+# ---------------- CONTACT ROUTE ----------------
 @app.route('/contact', methods=['POST'])
 def contact():
     name = request.form['name']
@@ -200,12 +215,13 @@ def send_email(name, sender_email, message_body):
     msg['To'] = "portofpower03@gmail.com"
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login("portofpower03@gmail.com", "nzhzlzoxwrwwucwd")  # Replace with env var
+        smtp.login("portofpower03@gmail.com", "nzhzlzoxwrwwucwd")
         smtp.send_message(msg)
 
 # ---------------- RUN APP ----------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
