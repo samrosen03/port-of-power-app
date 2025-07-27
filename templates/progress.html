@@ -56,12 +56,8 @@
               class="ml-2 px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
         Filter
       </button>
-
       {% if selected_exercise %}
-        <a href="/progress"
-           class="text-blue-500 text-sm underline ml-4">
-           Clear Filter
-        </a>
+        <a href="/progress" class="text-blue-500 text-sm underline ml-4">Clear Filter</a>
       {% endif %}
     </form>
 
@@ -84,6 +80,7 @@
             <th class="px-4 py-2 border border-gray-300">Workout</th>
             <th class="px-4 py-2 border border-gray-300">Weight</th>
             <th class="px-4 py-2 border border-gray-300">Reps</th>
+            <th class="px-4 py-2 border border-gray-300">Delete</th> <!-- ✅ Added -->
           </tr>
         </thead>
         <tbody>
@@ -93,6 +90,11 @@
               <td>{{ entry.exercise }}</td>
               <td>{{ entry.weight }}</td>
               <td>{{ entry.reps }}</td>
+              <td>
+                <form method="POST" action="{{ url_for('delete_entry', entry_id=entry.id) }}" style="display:inline;">
+                  <button type="submit" class="text-red-500 hover:text-red-700">🗑</button>
+                </form>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -102,6 +104,7 @@
   </div>
 </body>
 </html>
+
 
 
 

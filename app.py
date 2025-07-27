@@ -141,28 +141,40 @@ def progress():
             user_id=current_user.id
         ).order_by(Progress.date.desc()).all()
 
-    # All exercise names for filter dropdown
+    # All exercises for dropdown
     all_exercises = db.session.query(Progress.exercise).filter_by(
         user_id=current_user.id
     ).distinct().all()
     all_exercises = [e[0] for e in all_exercises]
 
-    # ✅ PR Query — Max weight per exercise
+    # ✅ PR Query
     pr_data = db.session.query(
         Progress.exercise,
         func.max(Progress.weight)
     ).filter_by(user_id=current_user.id).group_by(Progress.exercise).all()
 
-    # ✅ Convert PR results into dictionary for easy lookup
+    # ✅ PR Dictionary
     pr_dict = {exercise: max_weight for exercise, max_weight in pr_data}
 
-    # Render template with all required variables
     return render_template('progress.html',
                            progress_data=progress_data,
                            all_exercises=all_exercises,
                            selected_exercise=selected_exercise,
                            pr_data=pr_data,
                            pr_dict=pr_dict)
+
+# ---------------- DELETE ENTRY ROUTE ----------------
+@app.route('/delete/<int:entry_id>', methods=['POST'])
+@login_required
+def delete_entry(entry_id):
+    entry = Progress.query.filter_by(id=entry_id, user_id=current_user.id).first()
+    if entry:
+        db.session.delete(entry)
+        db.session.commit()
+        flash("Entry deleted successfully!", "success")
+    else:
+        flash("Entry not found or unauthorized.", "error")
+    return redirect(url_for('progress'))
 
 @app.route('/contact', methods=['POST'])
 def contact():
@@ -194,6 +206,7 @@ def send_email(name, sender_email, message_body):
 # ---------------- RUN APP ----------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
