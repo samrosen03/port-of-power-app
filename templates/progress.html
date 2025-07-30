@@ -95,7 +95,11 @@
         </thead>
         <tbody>
           {% for entry in progress_data %}
-            <tr class="{% if pr_dict.get(entry.exercise) == entry.weight %}bg-yellow-100 font-bold{% endif %}">
+  <tr class="
+      {% if loop.first %}bg-blue-100{% endif %}
+      {% if pr_dict.get(entry.exercise) == entry.weight %} font-bold{% endif %}
+  ">
+
               <td>{{ entry.date }}</td>
               <td>{{ entry.exercise }}</td>
               <td>{{ entry.weight }}</td>
