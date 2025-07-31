@@ -151,7 +151,7 @@ def progress():
 
     pr_dict = {exercise: max_weight for exercise, max_weight in pr_data}
 
-    # ✅ Calculate % change from first recorded weight to PR
+# ✅ Calculate % change from first recorded weight to PR
     percent_changes = {}
     for exercise in all_exercises:
         first_entry = Progress.query.filter_by(user_id=current_user.id, exercise=exercise).order_by(Progress.date.asc()).first()
@@ -160,6 +160,8 @@ def progress():
             pr_weight = pr_dict[exercise]
             if start_weight > 0:
                 percent_changes[exercise] = round(((pr_weight - start_weight) / start_weight) * 100, 1)
+    # ✅ Count total workouts logged
+    workout_count = len(progress_data)
 
     return render_template('progress.html',
                            progress_data=progress_data,
@@ -167,6 +169,7 @@ def progress():
                            selected_exercise=selected_exercise,
                            pr_data=pr_data,
                            pr_dict=pr_dict,
+                           workout_count=workout_count,
                            percent_changes=percent_changes)
 
 # ---------------- DELETE ENTRY ROUTE ----------------
