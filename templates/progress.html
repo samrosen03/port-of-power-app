@@ -8,22 +8,37 @@
 
   <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-3xl">
 
-    <!-- ✅ Page Title + Workout Counter -->
-    <h1 class="text-3xl font-bold text-blue-600 mb-2 text-center">Client Progress Dashboard</h1>
-    <p class="text-center text-gray-600 mb-6">Total Workouts Logged: <strong>{{ workout_count }}</strong></p>
+    <!-- ✅ Page Title + Workout Counter + Last Workout Info -->
+<h1 class="text-3xl font-bold text-blue-600 mb-2 text-center">Client Progress Dashboard</h1>
 
-    <a href="{{ url_for('index') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
+<p class="text-center text-gray-600 mb-2">
+  Total Workouts Logged: <strong>{{ workout_count }}</strong>
+</p>
 
-    <!-- ✅ Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="mb-4 text-center text-sm text-{{ 'green-600' if category == 'success' else 'red-600' }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+{% if last_workout_date %}
+  <p class="text-center text-gray-700 mb-2">
+    Last Workout: <strong>{{ last_workout_date }}</strong>
+  </p>
+  {% if show_warning %}
+    <p class="text-center text-red-600 font-semibold mb-4">
+      ⚠️ It's been over a week since your last workout!
+    </p>
+  {% endif %}
+{% endif %}
+
+<a href="{{ url_for('index') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
+
+<!-- ✅ Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="mb-4 text-center text-sm text-{{ 'green-600' if category == 'success' else 'red-600' }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 
     <!-- ✅ Progress Form -->
     <form method="POST" action="/progress" class="mb-8 max-w-md mx-auto space-y-4">
