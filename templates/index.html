@@ -1,53 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Port of Power</title>
-  <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #001f3f, #0074D9);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* ✅ Hero Section */
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 60px 20px 100px;
+      overflow: hidden;
+    }
+
+    /* ✅ CSS Waves (no file needed) */
+    .waves {
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 100% 50%;
+      animation: waveAnimation 6s infinite linear;
+      transform: rotate(0.5deg);
+    }
+
+    .waves::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 100% 50%;
+      animation: waveAnimation 10s infinite linear reverse;
+    }
+
+    @keyframes waveAnimation {
+      0% { transform: translateX(0) rotate(0.5deg); }
+      100% { transform: translateX(-50%) rotate(0.5deg); }
+    }
+
+    /* ✅ Container */
+    .container {
+      text-align: center;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    /* ✅ Buttons */
+    .btn {
+      display: inline-block;
+      background: #0074D9;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #005fa3;
+    }
+
+    /* ✅ Contact Form Hidden */
+    #contact-form {
+      display: none;
+      background: white;
+      color: black;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    #contact-form input, #contact-form textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #contact-form button {
+      background: #0074D9;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #contact-form button:hover {
+      background: #005fa3;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-<div class="w-full max-w-4xl px-4">
+<body>
 
-  <div class="text-center">
-    <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" alt="Port of Power Logo"
-         class="mx-auto mb-6 w-1/3 max-w-xs">
-
-    <h1 class="text-3xl font-bold text-blue-600 mb-4">Welcome to Port of Power.</h1>
-    <a href="{{ url_for('progress') }}"
-       class="inline-block bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-       Go to Client Dashboard
-    </a>
+  <!-- ✅ Hero Section -->
+  <div class="hero">
+    <div style="display:flex;justify-content:center;align-items:center;gap:15px;">
+      <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" 
+           alt="Port of Power Logo" 
+           style="width:90px;height:90px;border-radius:50%;box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+      <h1 style="font-size:2.5rem;font-weight:bold;">Welcome to <span style="color:#00d4ff;">Port of Power</span></h1>
+    </div>
+    <div class="waves"></div>
   </div>
 
-  <section id="contact" class="mt-8 bg-white shadow-md rounded p-6 max-w-md mx-auto">
-    <h2 class="text-2xl font-semibold text-center mb-4 text-blue-600">Contact Me</h2>
+  <div class="container">
+    <a href="{{ url_for('progress') }}" class="btn">Go to Client Dashboard</a>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="text-center mb-4 text-sm text-{{ 'green-600' if category == 'success' else 'red-600' }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+    <!-- ✅ Contact Me Button -->
+    <button class="btn" onclick="toggleContact()">Contact Me</button>
 
-    <form action="/contact" method="POST" class="space-y-4">
-      <input type="text" name="name" placeholder="Your Name"
-        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-      <input type="email" name="email" placeholder="Your Email"
-        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-      <textarea name="message" placeholder="Your Message"
-        class="w-full border border-gray-300 rounded px-3 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        required></textarea>
-      <button type="submit" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-  Submit
-</button>
-
+    <!-- ✅ Contact Form -->
+    <form id="contact-form" method="POST" action="/contact">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+      <button type="submit">Send Message</button>
     </form>
-  </section>
-</div>
+  </div>
+
+  <script>
+    function toggleContact() {
+      const form = document.getElementById('contact-form');
+      form.style.display = (form.style.display === 'block') ? 'none' : 'block';
+    }
+  </script>
+
 </body>
 </html>
+
+
+
+
 
 
 
