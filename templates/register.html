@@ -1,45 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Account</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+  <meta charset="UTF-8">
+  <title>Register | Port of Power</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #001f3f, #0074D9);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease-in-out;
+      text-align: center;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      color: #0074D9;
+    }
+    img.logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      margin-bottom: 10px;
+    }
+    form p {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #0074D9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease-in-out;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    .flash {
+      padding: 10px;
+      background-color: #ffdddd;
+      border: 1px solid red;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .login-link {
+      margin-top: 15px;
+    }
+    .login-link a {
+      color: #0074D9;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <h1>Create an Account</h1>
 
-    <form method="POST">
-        {{ form.hidden_tag() }}
-
-        <div>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-        </div>
-
-        <div>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </div>
-
-        <div>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </div>
-
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
+  <div class="card">
+    <!-- ✅ Logo -->
+    <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" alt="Port of Power Logo" class="logo">
+    <h2>Create Your Account</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <ul>
-          {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
+        {% for category, message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
       {% endif %}
     {% endwith %}
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <p>
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}
+      </p>
+
+      <p>
+        {{ form.email.label }}<br>
+        {{ form.email(size=32) }}
+      </p>
+
+      <p>
+        {{ form.password.label }}<br>
+        {{ form.password(size=32) }}
+      </p>
+
+      <p>{{ form.submit(class_="btn") }}</p>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+    </div>
+  </div>
+
 </body>
 </html>
+
+
+
 
