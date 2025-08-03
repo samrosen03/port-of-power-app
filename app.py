@@ -19,6 +19,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///progress.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+from flask_migrate import Migrate
+migrate = Migrate(app, db)
 
 # ---------------- LOGIN MANAGER ----------------
 login_manager = LoginManager()
@@ -54,6 +56,13 @@ class Progress(db.Model):
     exercise = db.Column(db.String(100))
     weight = db.Column(db.Integer)
     reps = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+class Cardio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(10))
+    activity = db.Column(db.String(100))
+    duration = db.Column(db.Float)  # minutes
+    distance = db.Column(db.Float)  # optional
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # ---------------- ROUTES ----------------
@@ -189,6 +198,62 @@ def progress():
                            last_workout_date=last_workout_date,
                            show_warning=show_warning,
                            percent_changes=percent_changes)
+# ---------------- CARDIO ROUTE ----------------
+@app.route('/cardio', methods=['GET', 'POST'])
+@login_required
+def cardio():
+    # ✅ POST: Add new cardio entry
+    if request.method == 'POST':
+        activity = request.form['activity']
+        duration = request.form['duration']
+        distance = request.form['distance']
+        date = datetime.now().strftime("%Y-%m-%d")
+
+        if not activity or not duration:
+            flash("Please fill out at least activity and duration.", "error")
+            return redirect(url_for('cardio'))
+
+        new_entry = Cardio(
+            date=date,
+            activity=activity,
+            duration=float(duration),
+            distance=float(distance) if distance else None,
+            user_id=current_user.id
+        )
+        db.session.add(new_entry)
+        db.session.commit()
+        flash("Cardio entry submitted!", "success")
+        return redirect(url_for('cardio'))
+
+    # ✅ GET: Load cardio data
+    selected_activity = request.args.get('activity')
+    if selected_activity:
+        cardio_data = Cardio.query.filter_by(
+            activity=selected_activity, user_id=current_user.id
+        ).order_by(Cardio.date.desc()).all()
+    else:
+        cardio_data = Cardio.query.filter_by(
+            user_id=current_user.id
+        ).order_by(Cardio.date.desc()).all()
+
+    # ✅ Activity list
+    all_activities = db.session.query(Cardio.activity).filter_by(
+        user_id=current_user.id
+    ).distinct().all()
+    all_activities = [a[0] for a in all_activities]
+
+    # ✅ Personal Records: best duration and longest distance
+    pr_durations = db.session.query(Cardio.activity, func.max(Cardio.duration)).filter_by(user_id=current_user.id).group_by(Cardio.activity).all()
+    pr_distances = db.session.query(Cardio.activity, func.max(Cardio.distance)).filter(Cardio.user_id == current_user.id, Cardio.distance.isnot(None)).group_by(Cardio.activity).all()
+    pr_duration_dict = {a: d for a, d in pr_durations}
+    pr_distance_dict = {a: dist for a, dist in pr_distances}
+
+    return render_template('cardio.html',
+                           cardio_data=cardio_data,
+                           all_activities=all_activities,
+                           selected_activity=selected_activity,
+                           pr_duration_dict=pr_duration_dict,
+                           pr_distance_dict=pr_distance_dict)
 
 # ---------------- DELETE ENTRY ROUTE ----------------
 @app.route('/delete/<int:entry_id>', methods=['POST'])

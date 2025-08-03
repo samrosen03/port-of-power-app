@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cardio Progress</title>
+  <link href="/static/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-3xl">
+
+    <!-- ✅ Header -->
+    <div class="text-center mb-6">
+      <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" 
+           style="width:50px;height:50px;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.2);margin:auto;">
+      <h1 class="text-3xl font-bold text-blue-600 mb-4">Cardio Tracker</h1>
+      <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline text-sm">← Back to Home</a>
+    </div>
+<div class="text-center mb-6 flex justify-center space-x-6">
+  <a href="{{ url_for('progress') }}" class="text-xl text-blue-400 hover:text-blue-500 transition duration-200">Strength</a>
+  <span class="font-bold text-xl text-blue-600 border-b-4 border-blue-600 pb-1">Cardio</span>
+</div>
+
+
+
+    <!-- ✅ Form -->
+    <form method="POST" action="/cardio" class="mb-8 max-w-md mx-auto space-y-4">
+      <input type="text" name="activity" placeholder="Activity (e.g. Running)"
+             class="w-full border border-gray-300 rounded px-4 py-2" required>
+      <input type="number" name="duration" placeholder="Duration (minutes)" step="0.1"
+             class="w-full border border-gray-300 rounded px-4 py-2" required>
+      <input type="number" name="distance" placeholder="Distance (optional)" step="0.1"
+             class="w-full border border-gray-300 rounded px-4 py-2">
+      <button type="submit" class="bg-black text-white w-full py-2 rounded hover:bg-gray-800">
+        Submit Cardio
+      </button>
+    </form>
+
+    <!-- ✅ PR Section -->
+    <h2 class="text-xl font-semibold mb-2 text-center">🏆 Personal Records</h2>
+    <ul class="text-center mb-6">
+      {% for act, dur in pr_duration_dict.items() %}
+        <li><b>{{ act }}</b>: Best Duration {{ dur }} min{% if pr_distance_dict.get(act) %} | Longest Distance {{ pr_distance_dict[act] }}{% endif %}</li>
+      {% endfor %}
+    </ul>
+
+    <!-- 📈 Graph -->
+    <h2 class="text-xl font-semibold mb-4 text-center"><b>📈 Progress Over Time</b></h2>
+    <div class="mb-10" style="max-width:600px;margin:auto;">
+      <canvas id="cardioChart"></canvas>
+    </div>
+
+    <!-- ✅ Table -->
+    <div class="overflow-x-auto">
+      <table class="table-auto w-full border">
+        <thead class="bg-blue-100 text-blue-700">
+          <tr><th>Date</th><th>Activity</th><th>Duration</th><th>Distance</th></tr>
+        </thead>
+        <tbody>
+          {% for entry in cardio_data %}
+            <tr>
+              <td>{{ entry.date }}</td>
+              <td>{{ entry.activity }}</td>
+              <td>{{ entry.duration }}</td>
+              <td>{{ entry.distance if entry.distance else '-' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const labels = [{% for e in cardio_data %}'{{ e.date }}',{% endfor %}];
+    const durations = [{% for e in cardio_data %}{{ e.duration }},{% endfor %}];
+    if(labels.length){
+      new Chart(document.getElementById('cardioChart'), {
+        type:'line',
+        data:{labels:labels, datasets:[{label:'Duration (min)', data:durations, borderColor:'red', backgroundColor:'rgba(255,0,0,0.2)', fill:true}]}
+      });
+    }
+  </script>
+</body>
+</html>
