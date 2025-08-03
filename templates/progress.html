@@ -8,26 +8,28 @@
 
   <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-3xl">
 
-    <!-- ✅ Logo (Centered, Slightly Larger) -->
-<div class="text-center mb-3">
+    <!-- ✅ Logo + Header -->
+    <div class="text-center mb-6">
+  <!-- ✅ Logo -->
   <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" 
        alt="Port of Power Logo" 
-       style="width:60px;height:60px;border-radius:50%;box-shadow:0 3px 8px rgba(0,0,0,0.25);display:block;margin:0 auto 10px auto;">
+       style="width:50px;height:50px;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.2);margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;">
+
+  <!-- ✅ Title -->
+  <h1 class="text-3xl font-bold text-blue-600 mb-4">Client Progress Dashboard</h1>
+
+  <!-- ✅ Back Home + Logout Buttons -->
+  <a href="{{ url_for('index') }}" 
+     class="block mb-3 text-blue-500 hover:underline text-sm">← Back to Home</a>
+
+  <!-- 🔹 Minimal Blue Logout Link -->
+<a href="{{ url_for('logout') }}" 
+   class="block mt-2 text-blue-500 hover:underline text-sm text-center">
+   🚪 Logout
+</a>
 </div>
 
-<!-- ✅ Page Title -->
-<h1 class="text-3xl font-bold text-blue-600 mb-4 text-center">Client Progress Dashboard</h1>
 
-
-
-
-    <!-- ✅ Workout Count -->
-    <p class="text-center text-gray-600 mb-6">
-      Total Workouts Logged: <strong>{{ workout_count }}</strong>
-    </p>
-
-    <!-- ✅ Back Home -->
-    <a href="{{ url_for('index') }}" class="block mb-6 text-blue-500 hover:underline text-sm text-center">← Back to Home</a>
 
     <!-- ✅ Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -40,40 +42,36 @@
       {% endif %}
     {% endwith %}
 
+    <!-- ✅ Total Workouts Counter -->
+    <p class="text-center text-gray-600 mb-6">
+      Total Workouts Logged: <strong>{{ workout_count }}</strong>
+    </p>
+
     <!-- ✅ Progress Form -->
     <form method="POST" action="/progress" class="mb-8 max-w-md mx-auto space-y-4">
       <input type="text" name="exercise" placeholder="Workout"
              class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-
       <input type="number" name="weight" placeholder="Weight"
              class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-
       <input type="number" name="reps" placeholder="Reps"
              class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-
       <button type="submit"
               class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-200 w-full">
         Submit Progress
       </button>
     </form>
 
-    <!-- ✅ Exercise Filter Dropdown -->
+    <!-- ✅ Exercise Filter -->
     <form method="GET" action="/progress" class="mb-8 text-center">
       <label for="exercise" class="mr-2 text-sm font-medium">Filter by exercise:</label>
       <select name="exercise" id="exercise"
               class="px-3 py-2 border border-gray-300 rounded text-sm">
         <option value="">-- Show All --</option>
         {% for exercise in all_exercises %}
-          <option value="{{ exercise }}"
-                  {% if exercise == selected_exercise %}selected{% endif %}>
-            {{ exercise }}
-          </option>
+          <option value="{{ exercise }}" {% if exercise == selected_exercise %}selected{% endif %}>{{ exercise }}</option>
         {% endfor %}
       </select>
-      <button type="submit"
-              class="ml-2 px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-        Filter
-      </button>
+      <button type="submit" class="ml-2 px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">Filter</button>
       {% if selected_exercise %}
         <a href="/progress" class="text-blue-500 text-sm underline ml-4">Clear Filter</a>
       {% endif %}
@@ -92,9 +90,9 @@
       {% endfor %}
     </ul>
 
-    <!-- 📊 Progress Chart -->
+    <!-- 📊 Chart -->
     <h2 class="text-xl font-semibold mb-4 text-center">📈 Progress Over Time</h2>
-    <div class="mb-10" style="max-width: 600px; margin: 0 auto;">
+    <div class="mb-10" style="max-width:600px;margin:0 auto;">
       <canvas id="progressChart"></canvas>
     </div>
 
@@ -120,8 +118,7 @@
               <td>
                 <div class="flex space-x-2">
                   <a href="{{ url_for('edit_entry', entry_id=entry.id) }}" class="text-blue-500 hover:text-blue-700">✏️</a>
-                  <form method="POST" action="{{ url_for('delete_entry', entry_id=entry.id) }}" 
-                        style="display:inline;" onsubmit="return confirmDelete();">
+                  <form method="POST" action="{{ url_for('delete_entry', entry_id=entry.id) }}" style="display:inline;" onsubmit="return confirmDelete();">
                     <button type="submit" aria-label="Delete Entry" class="text-red-500 hover:text-red-700">🗑</button>
                   </form>
                 </div>
@@ -134,18 +131,19 @@
 
   </div>
 
-  <!-- ✅ Scripts -->
+  <!-- ✅ Delete Confirmation -->
   <script>
     function confirmDelete() {
       return confirm("🗑 Are you sure you want to delete this entry?");
     }
   </script>
 
+  <!-- ✅ Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const ctx = document.getElementById('progressChart');
-      if (!ctx) return;
+      const chartCanvas = document.getElementById('progressChart');
+      if (!chartCanvas) return;
 
       const labels = [];
       const weights = [];
@@ -156,7 +154,7 @@
 
       if (labels.length === 0) return;
 
-      new Chart(ctx.getContext('2d'), {
+      new Chart(chartCanvas.getContext('2d'), {
         type: 'line',
         data: {
           labels: labels,
@@ -174,7 +172,10 @@
           responsive: true,
           maintainAspectRatio: true,
           plugins: { legend: { display: true } },
-          scales: { y: { beginAtZero: false } }
+          scales: {
+            x: { ticks: { maxRotation: 45, minRotation: 30, autoSkip: true } },
+            y: { beginAtZero: false }
+          }
         }
       });
     });
@@ -182,6 +183,7 @@
 
 </body>
 </html>
+
 
 
 
