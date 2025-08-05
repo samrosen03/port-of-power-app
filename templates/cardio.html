@@ -11,7 +11,7 @@
     <div class="text-center mb-6">
       <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" 
            style="width:50px;height:50px;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.2);margin:auto;">
-      <h1 class="text-3xl font-bold text-blue-600 mb-4">Cardio Tracker</h1>
+      <h1 class="text-3xl font-bold text-blue-600 mb-4 text-center">Client Progress Dashboard</h1>
       <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline text-sm">← Back to Home</a>
     </div>
 <!-- ✅ Clean Strength|Cardio Tabs -->
@@ -40,12 +40,20 @@
     </form>
 
     <!-- ✅ PR Section -->
-    <h2 class="text-xl font-semibold mb-2 text-center">🏆 Personal Records</h2>
-    <ul class="text-center mb-6">
-      {% for act, dur in pr_duration_dict.items() %}
-        <li><b>{{ act }}</b>: Best Duration {{ dur }} min{% if pr_distance_dict.get(act) %} | Longest Distance {{ pr_distance_dict[act] }}{% endif %}</li>
-      {% endfor %}
-    </ul>
+    <h2 class="text-xl font-semibold mb-2 text-center">Personal Records</h2>
+<ul class="text-center mb-10">
+  {% for exercise, weight in pr_data %}
+    <li class="text-gray-700">
+      <strong>{{ exercise }}:</strong> {{ weight }} lbs
+      {% if percent_changes.get(exercise) is not none %}
+        <span class="text-green-600">(+{{ percent_changes[exercise] }}%)</span>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
+
+
 
     <!-- 📈 Graph -->
     <h2 class="text-xl font-semibold mb-4 text-center"><b>📈 Progress Over Time</b></h2>
