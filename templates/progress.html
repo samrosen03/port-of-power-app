@@ -90,20 +90,21 @@
     </form>
 
     <!-- 💪 Personal Records Section -->
-    <h2 class="text-xl font-semibold mb-2 text-center">💪 Personal Records</h2>
-    <ul class="text-center mb-10">
-      {% for exercise, weight in pr_data %}
-        <li class="text-gray-700">
-          <strong>{{ exercise }}:</strong> {{ weight }} lbs
-          {% if percent_changes.get(exercise) is not none %}
-            <span class="text-green-600">(+{{ percent_changes[exercise] }}%)</span>
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ul>
+    <h2 class="text-xl font-semibold mb-2 text-center">Personal Records</h2>
+<ul class="text-center mb-10">
+  {% for exercise, weight in pr_data %}
+    <li class="text-gray-700">
+      <strong>{{ exercise }}:</strong> {{ weight }} lbs
+      {% if percent_changes.get(exercise) is not none %}
+        <span class="text-green-600">(+{{ percent_changes[exercise] }}%)</span>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+
 
     <!-- 📊 Chart -->
-    <h2 class="text-xl font-semibold mb-4 text-center">📈 Progress Over Time</h2>
+    <h2 class="text-xl font-semibold mb-4 text-center">Progress Over Time</h2>
     <div class="mb-10" style="max-width:600px;margin:0 auto;">
       <canvas id="progressChart"></canvas>
     </div>
