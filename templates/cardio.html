@@ -15,18 +15,12 @@
       <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline text-sm">← Back to Home</a>
     </div>
 <!-- ✅ Clean Strength|Cardio Tabs -->
-<div class="flex justify-center space-x-4 mb-6">
-  <!-- Strength Active -->
-  {% if request.endpoint == 'progress' %}
-    <span class="font-bold text-blue-600 border-b-2 border-blue-600 pb-1">💪 Strength</span>
-    <span class="text-gray-400">|</span>
-    <a href="{{ url_for('cardio') }}" class="text-blue-400 hover:text-blue-600 transition">🏃 Cardio</a>
-  {% else %}
-    <a href="{{ url_for('progress') }}" class="text-blue-400 hover:text-blue-600 transition">💪 Strength</a>
-    <span class="text-gray-400">|</span>
-    <span class="font-bold text-blue-600 border-b-2 border-blue-600 pb-1">🏃 Cardio</span>
-  {% endif %}
+<div class="text-center mb-4" style="font-size:1.2rem;">
+  <a href="{{ url_for('progress') }}" style="color:#5dade2;text-decoration:none;">Strength</a>
+  <span style="color:#ccc;margin:0 8px;">|</span>
+  <span style="color:#0074D9;font-weight:bold;border-bottom:2px solid #0074D9;padding-bottom:2px;">Cardio</span>
 </div>
+
 
 
 
