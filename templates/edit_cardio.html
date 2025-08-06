@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Cardio Entry</title>
+  <link href="/static/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-blue-600 mb-4 text-center">Edit Cardio Entry</h1>
+
+    <!-- ✅ Back to Cardio Page -->
+    <div class="text-center mb-4">
+      <a href="{{ url_for('cardio') }}" class="text-blue-500 hover:underline text-sm">← Back to Cardio Dashboard</a>
+    </div>
+
+    <!-- ✅ Edit Form -->
+    <form method="POST" class="space-y-4">
+      <input type="text" name="activity" value="{{ entry.activity }}" placeholder="Activity"
+             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+      <input type="number" name="duration" value="{{ entry.duration }}" placeholder="Duration (minutes)" step="0.1"
+             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+      <input type="number" name="distance" value="{{ entry.distance if entry.distance else '' }}" placeholder="Distance (optional)" step="0.1"
+             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+        💾 Save Changes
+      </button>
+    </form>
+  </div>
+
+</body>
+</html>
+

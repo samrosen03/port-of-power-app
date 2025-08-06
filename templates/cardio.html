@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Cardio Progress</title>
+  <title>Client Progress Dashboard</title>
   <link href="/static/css/output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -11,10 +11,10 @@
     <div class="text-center mb-6">
       <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}" 
            style="width:50px;height:50px;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.2);margin:auto;">
-      <h1 class="text-3xl font-bold text-blue-600 mb-4 text-center">Client Progress Dashboard</h1>
-      <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline text-sm">← Back to Home</a>
-    </div>
-<!-- ✅ Clean Strength|Cardio Tabs -->
+
+      <h1 class="text-3xl font-bold text-blue-600 mb-2 text-center">Client Progress Dashboard</h1>
+
+      <!-- ✅ Clean Strength|Cardio Tabs (Cardio active) -->
 <div class="text-center mb-4" style="font-size:1.2rem;">
   <a href="{{ url_for('progress') }}" style="color:#5dade2;text-decoration:none;">Strength</a>
   <span style="color:#ccc;margin:0 8px;">|</span>
@@ -24,57 +24,67 @@
 
 
 
+      <!-- ✅ Back + Logout -->
+      <div class="flex flex-col items-center space-y-1 text-sm mt-2">
+        <a href="{{ url_for('index') }}" class="text-blue-500 hover:underline">← Back to Home</a>
+        <a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">🚪 Logout</a>
+      </div>
+    </div>
 
-
-    <!-- ✅ Form -->
+    <!-- ✅ Cardio Form -->
     <form method="POST" action="/cardio" class="mb-8 max-w-md mx-auto space-y-4">
-      <input type="text" name="activity" placeholder="Activity (e.g. Running)"
-             class="w-full border border-gray-300 rounded px-4 py-2" required>
-      <input type="number" name="duration" placeholder="Duration (minutes)" step="0.1"
-             class="w-full border border-gray-300 rounded px-4 py-2" required>
-      <input type="number" name="distance" placeholder="Distance (optional)" step="0.1"
-             class="w-full border border-gray-300 rounded px-4 py-2">
-      <button type="submit" class="bg-black text-white w-full py-2 rounded hover:bg-gray-800">
-        Submit Cardio
-      </button>
+      <input type="text" name="activity" placeholder="Activity (e.g. Running)" class="w-full border border-gray-300 rounded px-4 py-2" required>
+      <input type="number" name="duration" placeholder="Duration (minutes)" step="0.1" class="w-full border border-gray-300 rounded px-4 py-2" required>
+      <input type="number" name="distance" placeholder="Distance (optional)" step="0.1" class="w-full border border-gray-300 rounded px-4 py-2">
+      <button type="submit" class="bg-black text-white w-full py-2 rounded hover:bg-gray-800">Submit Cardio</button>
     </form>
 
-    <!-- ✅ PR Section -->
+    <!-- ✅ Personal Records Section -->
     <h2 class="text-xl font-semibold mb-2 text-center">Personal Records</h2>
-<ul class="text-center mb-10">
-  {% for exercise, weight in pr_data %}
-    <li class="text-gray-700">
-      <strong>{{ exercise }}:</strong> {{ weight }} lbs
-      {% if percent_changes.get(exercise) is not none %}
-        <span class="text-green-600">(+{{ percent_changes[exercise] }}%)</span>
-      {% endif %}
-    </li>
-  {% endfor %}
-</ul>
+    {% if pr_duration_dict %}
+    <ul class="text-center mb-10">
+      {% for activity, duration in pr_duration_dict.items() %}
+        <li class="text-gray-700"><strong>{{ activity }}:</strong> {{ duration }} min</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-center text-gray-500 mb-10">No cardio records yet.</p>
+    {% endif %}
 
-
-
-
-    <!-- 📈 Graph -->
-    <h2 class="text-xl font-semibold mb-4 text-center"><b>📈 Progress Over Time</b></h2>
+    <!-- ✅ Progress Over Time Chart -->
+    <h2 class="text-xl font-semibold mb-4 text-center">Progress Over Time</h2>
     <div class="mb-10" style="max-width:600px;margin:auto;">
       <canvas id="cardioChart"></canvas>
     </div>
 
-    <!-- ✅ Table -->
+    <!-- ✅ Cardio Table -->
     <div class="overflow-x-auto">
       <table class="table-auto w-full border">
         <thead class="bg-blue-100 text-blue-700">
-          <tr><th>Date</th><th>Activity</th><th>Duration</th><th>Distance</th></tr>
+          <tr>
+            <th>Date</th>
+            <th>Activity</th>
+            <th>Duration</th>
+            <th>Distance</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
           {% for entry in cardio_data %}
-            <tr>
-              <td>{{ entry.date }}</td>
-              <td>{{ entry.activity }}</td>
-              <td>{{ entry.duration }}</td>
-              <td>{{ entry.distance if entry.distance else '-' }}</td>
-            </tr>
+          <tr>
+            <td>{{ entry.date }}</td>
+            <td>{{ entry.activity }}</td>
+            <td>{{ entry.duration }}</td>
+            <td>{{ entry.distance if entry.distance else '-' }}</td>
+            <td>
+              <div class="flex space-x-2">
+                <a href="{{ url_for('edit_cardio', entry_id=entry.id) }}" class="text-blue-500 hover:text-blue-700">✏️</a>
+                <form method="POST" action="{{ url_for('delete_cardio', entry_id=entry.id) }}" style="display:inline;" onsubmit="return confirm('Delete this entry?')">
+                  <button type="submit" class="text-red-500 hover:text-red-700">🗑</button>
+                </form>
+              </div>
+            </td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -82,6 +92,7 @@
 
   </div>
 
+  <!-- ✅ Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const labels = [{% for e in cardio_data %}'{{ e.date }}',{% endfor %}];
@@ -95,3 +106,7 @@
   </script>
 </body>
 </html>
+
+
+
+

@@ -254,6 +254,24 @@ def cardio():
                            selected_activity=selected_activity,
                            pr_duration_dict=pr_duration_dict,
                            pr_distance_dict=pr_distance_dict)
+# ---------------- EDIT STRENGTH ENTRY ROUTE ----------------
+@app.route('/edit/<int:entry_id>', methods=['GET', 'POST'], endpoint='edit_entry')
+@login_required
+def edit_entry(entry_id):
+    entry = Progress.query.filter_by(id=entry_id, user_id=current_user.id).first()
+    if not entry:
+        flash("Strength entry not found or unauthorized.", "error")
+        return redirect(url_for('progress'))
+
+    if request.method == 'POST':
+        entry.exercise = request.form['exercise']
+        entry.weight = int(request.form['weight'])
+        entry.reps = int(request.form['reps'])
+        db.session.commit()
+        flash("Strength entry updated successfully!", "success")
+        return redirect(url_for('progress'))
+
+    return render_template('edit.html', entry=entry)
 
 # ---------------- DELETE ENTRY ROUTE ----------------
 @app.route('/delete/<int:entry_id>', methods=['POST'])
@@ -268,24 +286,41 @@ def delete_entry(entry_id):
         flash("Entry not found or unauthorized.", "error")
     return redirect(url_for('progress'))
 
-# ---------------- EDIT ENTRY ROUTE ----------------
-@app.route('/edit/<int:entry_id>', methods=['GET', 'POST'])
+# ---------------- DELETE CARDIO ENTRY ROUTE ----------------
+@app.route('/delete_cardio/<int:entry_id>', methods=['POST'])
 @login_required
-def edit_entry(entry_id):
-    entry = Progress.query.filter_by(id=entry_id, user_id=current_user.id).first()
+def delete_cardio(entry_id):
+    entry = Cardio.query.filter_by(id=entry_id, user_id=current_user.id).first()
+    if entry:
+        db.session.delete(entry)
+        db.session.commit()
+        flash("Cardio entry deleted successfully!", "success")
+    else:
+        flash("Cardio entry not found or unauthorized.", "error")
+    return redirect(url_for('cardio'))
+
+
+# ---------------- EDIT CARDIO ENTRY ROUTE ----------------
+@app.route('/edit_cardio/<int:entry_id>', methods=['GET', 'POST'], endpoint='edit_cardio')
+@login_required
+def edit_cardio(entry_id):
+    entry = Cardio.query.filter_by(id=entry_id, user_id=current_user.id).first()
     if not entry:
-        flash("Entry not found or unauthorized.", "error")
-        return redirect(url_for('progress'))
+        flash("Cardio entry not found or unauthorized.", "error")
+        return redirect(url_for('cardio'))
 
     if request.method == 'POST':
-        entry.exercise = request.form['exercise']
-        entry.weight = int(request.form['weight'])
-        entry.reps = int(request.form['reps'])
+        entry.activity = request.form['activity']
+        entry.duration = float(request.form['duration'])
+        entry.distance = float(request.form['distance']) if request.form['distance'] else None
         db.session.commit()
-        flash("Entry updated successfully!", "success")
-        return redirect(url_for('progress'))
+        flash("Cardio entry updated successfully!", "success")
+        return redirect(url_for('cardio'))
 
-    return render_template('edit.html', entry=entry)
+    return render_template('edit_cardio.html', entry=entry)
+
+
+
 
 # ---------------- CONTACT ROUTE ----------------
 @app.route('/contact', methods=['POST'])
