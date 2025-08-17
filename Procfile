@@ -1,1 +1,2 @@
-web: gunicorn app:app
+web: bash -lc "flask db upgrade && gunicorn wsgi:app"
+
