@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 import smtplib
 from email.message import EmailMessage
 from sqlalchemy import func
+from dotenv import load_dotenv
+load_dotenv()
 
 # ---------------- FLASK CONFIG ----------------
 import os
