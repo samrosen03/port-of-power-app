@@ -11,16 +11,24 @@ from email.message import EmailMessage
 from sqlalchemy import func
 
 # ---------------- FLASK CONFIG ----------------
+import os
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
+
 
 # ---------------- DATABASE CONFIG ----------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///progress.db'
+db_url = os.getenv("DATABASE_URL")
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'sqlite:///progress.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 from flask_migrate import Migrate
 migrate = Migrate(app, db)
+
 
 # ---------------- LOGIN MANAGER ----------------
 login_manager = LoginManager()
@@ -343,16 +351,19 @@ def send_email(name, sender_email, message_body):
     msg = EmailMessage()
     msg.set_content(f"Message from {name} <{sender_email}>:\n\n{message_body}")
     msg['Subject'] = "New Contact Form Submission"
-    msg['From'] = "portofpower03@gmail.com"
-    msg['To'] = "portofpower03@gmail.com"
+    msg['From'] = os.getenv("MAIL_FROM")
+    msg['To'] = os.getenv("MAIL_TO")
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login("portofpower03@gmail.com", "nzhzlzoxwrwwucwd")
+        smtp.login(os.getenv("MAIL_USER"), os.getenv("MAIL_PASS"))
         smtp.send_message(msg)
 
+
 # ---------------- RUN APP ----------------
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import os
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
 
 
 
