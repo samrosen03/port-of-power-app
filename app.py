@@ -16,15 +16,19 @@ load_dotenv()
 import os
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
-
-
 # ---------------- DATABASE CONFIG ----------------
 db_url = os.getenv("DATABASE_URL")
+
+# Normalize old scheme some providers use
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'sqlite:///progress.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Require SSL for managed Postgres (Render)
+if db_url and "sslmode=" not in db_url:
+    db_url += ("&" if "?" in db_url else "?") + "sslmode=require"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url or "sqlite:///progress.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -55,25 +59,30 @@ class RegisterForm(FlaskForm):
 
 # ---------------- DATABASE MODELS ----------------
 class User(db.Model, UserMixin):
+    __tablename__ = "users"  # not the reserved keyword "user"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), nullable=False, unique=True)
     email = db.Column(db.String(150), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
 
 class Progress(db.Model):
+    __tablename__ = "progress"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10))
     exercise = db.Column(db.String(100))
     weight = db.Column(db.Integer)
     reps = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
 class Cardio(db.Model):
+    __tablename__ = "cardio"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10))
     activity = db.Column(db.String(100))
-    duration = db.Column(db.Float)  # minutes
-    distance = db.Column(db.Float)  # optional
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    duration = db.Column(db.Float)   # minutes
+    distance = db.Column(db.Float)   # optional
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
 
 # ---------------- ROUTES ----------------
 @app.route('/')
