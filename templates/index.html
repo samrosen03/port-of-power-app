@@ -14,13 +14,21 @@
    }
 
 
-   /* ✅ Hero Section */
-   .hero {
-     position: relative;
-     text-align: center;
-     padding: 60px 20px 100px;
-     overflow: hidden;
-   }
+   <!-- ✅ Hero Section -->
+<div class="hero">
+  <div class="hero-inner">
+    <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}"
+         alt="Port of Power Logo"
+         class="logo">
+    <h1>Welcome to <span class="accent">Port of Power</span></h1>
+    <div class="actions">
+      <a href="{{ url_for('progress') }}" class="btn">Go to Client Dashboard</a>
+      <button class="btn secondary" type="button" onclick="toggleContact()">Contact Me</button>
+    </div>
+  </div>
+  <div class="waves"></div>
+</div>
+
 
 
    /* ✅ CSS Waves (no file needed) */

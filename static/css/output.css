@@ -758,3 +758,66 @@ video {
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
+/* === Hero Cleanup === */
+.hero {
+  text-align: center;
+  padding: 60px 20px 100px;
+  background: linear-gradient(to bottom, #001f3f, #0074D9);
+  color: #fff;
+  position: relative;
+}
+
+.hero-inner {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.logo {
+  width: clamp(70px, 18vw, 110px);
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
+}
+
+.hero h1 {
+  font-size: clamp(24px, 6vw, 40px);
+  font-weight: 800;
+  margin: 10px 0 20px;
+}
+
+.hero .accent { color: #00d4ff; }
+
+/* Buttons side-by-side on desktop, stacked on mobile */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+@media (min-width: 640px) {
+  .actions { flex-direction: row; justify-content: center; }
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+  max-width: 250px;
+  background: #0074D9;
+  border: none;
+  color: #fff;
+}
+.btn:hover { background: #005fa3; }
+
+.btn.secondary {
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+}
+.btn.secondary:hover {
+  background: rgba(255,255,255,0.1);
+}
