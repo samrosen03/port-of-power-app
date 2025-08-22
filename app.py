@@ -255,6 +255,8 @@ def cardio():
             user_id=current_user.id
         ).order_by(Cardio.date.desc()).all()
 
+    cardio_count = len(cardio_data)   # 🔹 added
+
     # ✅ Activity list
     all_activities = db.session.query(Cardio.activity).filter_by(
         user_id=current_user.id
@@ -272,7 +274,8 @@ def cardio():
                            all_activities=all_activities,
                            selected_activity=selected_activity,
                            pr_duration_dict=pr_duration_dict,
-                           pr_distance_dict=pr_distance_dict)
+                           pr_distance_dict=pr_distance_dict,
+                           cardio_count=cardio_count)   # 🔹 added
 # ---------------- EDIT STRENGTH ENTRY ROUTE ----------------
 @app.route('/edit/<int:entry_id>', methods=['GET', 'POST'], endpoint='edit_entry')
 @login_required
@@ -374,6 +377,7 @@ def send_email(name, sender_email, message_body):
 if __name__ == "__main__":
     import os
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
 
 
 

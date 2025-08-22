@@ -3,7 +3,6 @@
 <head>
   <title>Client Progress Dashboard</title>
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
   <link href="/static/css/output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -17,14 +16,11 @@
       <h1 class="text-3xl font-bold text-blue-600 mb-2 text-center">Client Progress Dashboard</h1>
 
       <!-- ✅ Clean Strength|Cardio Tabs (Cardio active) -->
-<div class="text-center mb-4" style="font-size:1.2rem;">
-  <a href="{{ url_for('progress') }}" style="color:#5dade2;text-decoration:none;">Strength</a>
-  <span style="color:#ccc;margin:0 8px;">|</span>
-  <span style="color:#0074D9;font-weight:bold;border-bottom:2px solid #0074D9;padding-bottom:2px;">Cardio</span>
-</div>
-
-
-
+      <div class="text-center mb-4" style="font-size:1.2rem;">
+        <a href="{{ url_for('progress') }}" style="color:#5dade2;text-decoration:none;">Strength</a>
+        <span style="color:#ccc;margin:0 8px;">|</span>
+        <span style="color:#0074D9;font-weight:bold;border-bottom:2px solid #0074D9;padding-bottom:2px;">Cardio</span>
+      </div>
 
       <!-- ✅ Back + Logout -->
       <div class="flex flex-col items-center space-y-1 text-sm mt-2">
@@ -33,13 +29,34 @@
       </div>
     </div>
 
+    <!-- ✅ Total Workouts Counter (matches Strength) -->
+    <p class="text-center text-gray-600 mb-6">
+      Total Workouts Logged: <strong>{{ cardio_count }}</strong>
+    </p>
+
     <!-- ✅ Cardio Form -->
     <form method="POST" action="/cardio" class="mb-8 max-w-md mx-auto space-y-4">
       <input type="text" name="activity" placeholder="Activity (e.g. Running)" class="w-full border border-gray-300 rounded px-4 py-2" required>
       <input type="number" name="duration" placeholder="Duration (minutes)" step="0.1" class="w-full border border-gray-300 rounded px-4 py-2" required>
       <input type="number" name="distance" placeholder="Distance (optional)" step="0.1" class="w-full border border-gray-300 rounded px-4 py-2">
-      <button type="submit" class="bg-black text-white w-full py-2 rounded hover:bg-gray-800">Submit Cardio</button>
+      <!-- 🔁 Renamed to match Strength -->
+      <button type="submit" class="bg-black text-white w-full py-2 rounded hover:bg-gray-800">Submit Progress</button>
     </form>
+<!-- ✅ Activity Filter (matches Strength style) -->
+<form method="GET" action="/cardio" class="mb-8 text-center">
+  <label for="activity" class="mr-2 text-sm font-medium">Filter by activity:</label>
+  <select name="activity" id="activity"
+          class="px-3 py-2 border border-gray-300 rounded text-sm">
+    <option value="">-- Show All --</option>
+    {% for activity in all_activities %}
+      <option value="{{ activity }}" {% if activity == selected_activity %}selected{% endif %}>{{ activity }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="ml-2 px-3 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">Filter</button>
+  {% if selected_activity %}
+    <a href="/cardio" class="text-blue-500 text-sm underline ml-4">Clear Filter</a>
+  {% endif %}
+</form>
 
     <!-- ✅ Personal Records Section -->
     <h2 class="text-xl font-semibold mb-2 text-center">Personal Records</h2>
@@ -108,6 +125,7 @@
   </script>
 </body>
 </html>
+
 
 
 

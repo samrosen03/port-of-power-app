@@ -93,6 +93,7 @@
 
     <!-- 💪 Personal Records Section -->
     <h2 class="text-xl font-semibold mb-2 text-center">Personal Records</h2>
+{% if pr_data %}
 <ul class="text-center mb-10">
   {% for exercise, weight in pr_data %}
     <li class="text-gray-700">
@@ -103,6 +104,10 @@
     </li>
   {% endfor %}
 </ul>
+{% else %}
+<p class="text-center text-gray-500 mb-10">No strength records yet.</p>
+{% endif %}
+
 
 
     <!-- 📊 Chart -->
