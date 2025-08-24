@@ -1,178 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <title>Port of Power</title>
- <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
- <style>
-   body {
-     font-family: Arial, sans-serif;
-     margin: 0;
-     padding: 0;
-     background: linear-gradient(to bottom, #001f3f, #0074D9);
-     color: white;
-     overflow-x: hidden;
-   }
-
-
-   <!-- ✅ Hero Section -->
-<div class="hero">
-  <div class="hero-inner">
-    <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}"
-         alt="Port of Power Logo"
-         class="logo">
-    <h1>Welcome to <span class="accent">Port of Power</span></h1>
-    <div class="actions">
-      <a href="{{ url_for('progress') }}" class="btn">Go to Client Dashboard</a>
-      <button class="btn secondary" type="button" onclick="toggleContact()">Contact Me</button>
-    </div>
-  </div>
-  <div class="waves"></div>
-</div>
-
-
-
-   /* ✅ CSS Waves (no file needed) */
-   .waves {
-     position: absolute;
-     bottom: 0;
-     width: 200%;
-     height: 120px;
-     background: rgba(255, 255, 255, 0.2);
-     border-radius: 100% 50%;
-     animation: waveAnimation 6s infinite linear;
-     transform: rotate(0.5deg);
-   }
-
-
-   .waves::after {
-     content: '';
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 200%;
-     height: 120px;
-     background: rgba(255, 255, 255, 0.1);
-     border-radius: 100% 50%;
-     animation: waveAnimation 10s infinite linear reverse;
-   }
-
-
-   @keyframes waveAnimation {
-     0% { transform: translateX(0) rotate(0.5deg); }
-     100% { transform: translateX(-50%) rotate(0.5deg); }
-   }
-
-
-   /* ✅ Container */
-   .container {
-     text-align: center;
-     padding: 20px;
-     max-width: 600px;
-     margin: auto;
-   }
-
-
-   /* ✅ Buttons */
-   .btn {
-     display: inline-block;
-     background: #0074D9;
-     color: white;
-     padding: 10px 20px;
-     border-radius: 5px;
-     text-decoration: none;
-     margin-top: 10px;
-     transition: background 0.3s;
-   }
-
-
-   .btn:hover {
-     background: #005fa3;
-   }
-
-
-   /* ✅ Contact Form Hidden */
-   #contact-form {
-     display: none;
-     background: white;
-     color: black;
-     padding: 20px;
-     margin-top: 20px;
-     border-radius: 8px;
-     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-   }
-
-
-   #contact-form input, #contact-form textarea {
-     width: 100%;
-     padding: 8px;
-     margin: 8px 0;
-     border: 1px solid #ccc;
-     border-radius: 5px;
-   }
-
-
-   #contact-form button {
-     background: #0074D9;
-     color: white;
-     padding: 10px 15px;
-     border: none;
-     border-radius: 5px;
-     cursor: pointer;
-   }
-
-
-   #contact-form button:hover {
-     background: #005fa3;
-   }
- </style>
+  <meta charset="UTF-8" />
+  <title>Port of Power</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link href="/static/css/output.css" rel="stylesheet">
+  <style>
+    /* keep background + smooth scroll; inline styles handle layout */
+    body { background: linear-gradient(135deg, #001f3f 0%, #0074D9 100%); color: #fff; }
+    html { scroll-behavior: smooth; }
+  </style>
 </head>
 <body>
 
+  <!-- HERO -->
+  <section style="min-height:72vh;display:flex;align-items:center;justify-content:center;padding:32px 16px 0;">
+    <div style="width:100%;max-width:640px;text-align:center;">
+      <!-- ✅ Fixed logo size -->
+      <img
+        src="{{ url_for('static', filename='images/portofpower_logo.webp') }}"
+        alt="Port of Power Logo"
+        style="width:80px;height:80px;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,.25);margin:0 auto 16px;display:block;"
+      >
 
- <!-- ✅ Hero Section -->
- <div class="hero">
-   <div style="display:flex;justify-content:center;align-items:center;gap:15px;">
-     <img src="{{ url_for('static', filename='images/portofpower_logo.webp') }}"
-          alt="Port of Power Logo"
-          style="width:90px;height:90px;border-radius:50%;box-shadow:0 4px 10px rgba(0,0,0,0.3);">
-     <h1 style="font-size:2.5rem;font-weight:bold;">Welcome to <span style="color:#00d4ff;">Port of Power</span></h1>
-   </div>
-   <div class="waves"></div>
- </div>
+      <h1 style="font-size:clamp(24px,4.5vw,36px);font-weight:800;margin:0 0 8px;">
+        <span>⚡️</span> Welcome to <span style="color:#cfe2ff;">Port of Power</span>
+      </h1>
 
+      <p style="opacity:.92;margin:0 0 20px;font-size:16px;">
+        Track your workouts. Stay consistent. Get stronger.
+      </p>
 
- <div class="container">
-   <a href="{{ url_for('progress') }}" class="btn">Go to Client Dashboard</a>
+      <!-- ✅ Compact centered buttons -->
+      <div style="max-width:320px;margin:0 auto;display:grid;gap:12px;">
+        <a href="{{ url_for('login') }}"
+           style="display:block;text-align:center;padding:12px 16px;background:#2563eb;color:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.2);text-decoration:none;font-weight:600;">
+          Go to Client Dashboard
+        </a>
+        <a href="#contact"
+           style="display:block;text-align:center;padding:12px 16px;background:rgba(255,255,255,.12);color:#fff;border-radius:12px;text-decoration:none;font-weight:600;">
+          Contact Me
+        </a>
+      </div>
+    </div>
+  </section>
 
+  <!-- ✅ CONTACT in clean card -->
+  <section id="contact" style="padding:48px 16px 64px;margin-top:48px;">
+    <div style="max-width:640px;margin:0 auto;background:rgba(255,255,255,0.10);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25);backdrop-filter:blur(6px);">
+      <h2 style="font-size:clamp(20px,3.5vw,28px);font-weight:700;margin:0 0 16px;">Get in touch</h2>
 
-   <!-- ✅ Contact Me Button -->
-   <button class="btn" onclick="toggleContact()">Contact Me</button>
+      <form method="POST" action="{{ url_for('contact') }}" style="display:grid;gap:12px;">
+        <input type="text" name="name" placeholder="Your name"
+               style="font-size:16px;width:100%;background:#fff;color:#111;border:none;border-radius:12px;padding:12px 16px;outline:none;" required>
+        <input type="email" name="email" placeholder="Your email"
+               style="font-size:16px;width:100%;background:#fff;color:#111;border:none;border-radius:12px;padding:12px 16px;outline:none;" required>
+        <textarea name="message" placeholder="How can I help?"
+                  style="font-size:16px;width:100%;background:#fff;color:#111;border:none;border-radius:12px;padding:12px 16px;outline:none;min-height:120px;resize:vertical;" required></textarea>
+        <button type="submit"
+                style="width:100%;background:#2563eb;color:#fff;font-weight:700;padding:12px;border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
 
-
-   <!-- ✅ Contact Form -->
-   <form id="contact-form" method="POST" action="/contact">
-     <input type="text" name="name" placeholder="Your Name" required>
-     <input type="email" name="email" placeholder="Your Email" required>
-     <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
-     <button type="submit">Send Message</button>
-   </form>
- </div>
-
-
- <script>
-   function toggleContact() {
-     const form = document.getElementById('contact-form');
-     form.style.display = (form.style.display === 'block') ? 'none' : 'block';
-   }
- </script>
-
-
-
-
+  <footer style="text-align:center;opacity:.7;font-size:12px;padding-bottom:24px;">
+    © Port of Power
+  </footer>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 
